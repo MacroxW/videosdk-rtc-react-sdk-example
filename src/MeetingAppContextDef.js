@@ -1,10 +1,13 @@
 import { useContext, createContext, useState, useEffect, useRef } from "react";
+import { meetingTypes, participantModes } from "./utils/common";
 
 export const MeetingAppContext = createContext();
 
 export const useMeetingAppContext = () => useContext(MeetingAppContext);
 
 export const MeetingAppProvider = ({ children }) => {
+  const [meetingType, setMeetingType] = useState(meetingTypes.MEETING);
+  const [participantMode, setParticipantMode] = useState(participantModes.SEND_AND_RECV)
   const [selectedMic, setSelectedMic] = useState({ id: null, label: null });
   const [selectedWebcam, setSelectedWebcam] = useState({ id: null, label: null });
   const [selectedSpeaker, setSelectedSpeaker] = useState({ id: null, label: null });
@@ -77,6 +80,8 @@ export const MeetingAppProvider = ({ children }) => {
         pipMode,
         isCameraPermissionAllowed,
         isMicrophonePermissionAllowed,
+        meetingType,
+        participantMode,
 
         // setters
 
@@ -89,6 +94,8 @@ export const MeetingAppProvider = ({ children }) => {
         useRaisedHandParticipants,
         setIsCameraPermissionAllowed,
         setIsMicrophonePermissionAllowed,
+        setMeetingType,
+        setParticipantMode
       }}
     >
       {children}

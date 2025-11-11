@@ -1,10 +1,11 @@
 import { MeetingProvider } from "@videosdk.live/react-sdk";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { MeetingAppProvider } from "./MeetingAppContextDef";
 import { MeetingContainer } from "./meeting/MeetingContainer";
 import { LeaveScreen } from "./components/screens/LeaveScreen";
 import { JoiningScreen } from "./components/screens/JoiningScreen"
+import { createMeeting } from "./api";
 
 function App() {
   const [token, setToken] = useState("");
@@ -16,10 +17,12 @@ function App() {
   const [customVideoStream, setCustomVideoStream] = useState(null)
   const [isMeetingStarted, setMeetingStarted] = useState(false);
   const [isMeetingLeft, setIsMeetingLeft] = useState(false);
+  const participantModeRef = useRef(null)
 
   const isMobile = window.matchMedia(
     "only screen and (max-width: 768px)"
   ).matches;
+
 
   useEffect(() => {
     if (isMobile) {
@@ -42,7 +45,8 @@ function App() {
               name: participantName ? participantName : "TestUser",
               multiStream: true,
               customCameraVideoTrack: customVideoStream,
-              customMicrophoneAudioTrack: customAudioStream
+              customMicrophoneAudioTrack: customAudioStream,
+              mode: participantModeRef.current
             }}
             token={token}
             reinitialiseMeetingOnConfigChange={true}
@@ -83,6 +87,7 @@ function App() {
             }}
             startMeeting={isMeetingStarted}
             setIsMeetingLeft={setIsMeetingLeft}
+            participantModeRef={participantModeRef}
           />
         )}
       </MeetingAppProvider>

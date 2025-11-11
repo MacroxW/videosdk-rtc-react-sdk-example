@@ -35,6 +35,12 @@ export const trimSnackBarText = (text = "") => {
   return text.length > maxLength ? `${text.substr(0, maxLength - 5)}...` : text;
 };
 
+export const meetingTypes = {
+  MEETING: "MEETING",
+  HLS: "HLS",
+  ILS: "ILS"
+};
+
 export const nameTructed = (name, tructedLength) => {
   if (name?.length > tructedLength) {
     if (tructedLength === 15) {
@@ -50,6 +56,12 @@ export const nameTructed = (name, tructedLength) => {
 export const sideBarModes = {
   PARTICIPANTS: "PARTICIPANTS",
   CHAT: "CHAT",
+};
+
+export const participantModes = {
+  SEND_AND_RECV: "SEND_AND_RECV",
+  RECV_ONLY: "RECV_ONLY",
+  SIGNALLING_ONLY : "SIGNALLING_ONLY"
 };
 
 export function debounce(func, wait, immediate) {

@@ -12,6 +12,9 @@ import useIsTab from "../hooks/useIsTab";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "react-toastify";
 import { useMeetingAppContext } from "../MeetingAppContextDef";
+import { meetingTypes } from "../utils/common";
+import { TopBar } from "../components/TopBar";
+import useIsRecording from "../hooks/useIsRecording";
 
 export function MeetingContainer({
   onMeetingLeave,
@@ -21,6 +24,7 @@ export function MeetingContainer({
     setSelectedMic,
     setSelectedWebcam,
     setSelectedSpeaker,
+    meetingType
   } = useMeetingAppContext();
 
   const [participantsData, setParticipantsData] = useState([]);
@@ -48,6 +52,7 @@ export function MeetingContainer({
 
   const { useRaisedHandParticipants } = useMeetingAppContext();
   const bottomBarHeight = 60;
+  const topBarHeight = 60;
 
   const [containerHeight, setContainerHeight] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -102,7 +107,8 @@ export function MeetingContainer({
 
   const _handleOnRecordingStateChanged = ({ status }) => {
     if (
-      status === Constants.recordingEvents.RECORDING_STARTED ||
+
+   status === Constants.recordingEvents.RECORDING_STARTED ||
       status === Constants.recordingEvents.RECORDING_STOPPED
     ) {
       toast(
@@ -182,7 +188,7 @@ export function MeetingContainer({
     onParticipantJoined,
     onEntryResponded,
     onMeetingJoined,
-    onMeetingStateChanged: ({state}) => {
+    onMeetingStateChanged: ({ state }) => {
       toast(`Meeting is in ${state} state`, {
         position: "bottom-left",
         autoClose: 4000,
@@ -279,16 +285,30 @@ export function MeetingContainer({
     },
   });
 
+  const isRecording = useIsRecording()
+
   return (
     <div className="fixed inset-0">
       <div ref={containerRef} className="h-full flex flex-col bg-gray-800">
         {typeof localParticipantAllowedJoin === "boolean" ? (
           localParticipantAllowedJoin ? (
             <>
+              {((meetingType === meetingTypes.HLS || meetingType === meetingTypes.ILS) || (meetingType === meetingTypes.MEETING && isRecording)) &&
+                (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: isTab || isMobile ? "" : "column",
+                      height: topBarHeight,
+                    }}
+                  >
+                    <TopBar topBarHeight={topBarHeight} />
+                  </div>
+                )}
               <div className={` flex flex-1 flex-row bg-gray-800 `}>
                 <div className={`flex flex-1 `}>
                   {isPresenting ? (
-                    <PresenterView height={containerHeight - bottomBarHeight} />
+                    <PresenterView height={containerHeight - topBarHeight - bottomBarHeight} />
                   ) : null}
                   {isPresenting && isMobile ? (
                     participantsData.map((participantId) => (
@@ -300,7 +320,7 @@ export function MeetingContainer({
                 </div>
 
                 <SidebarConatiner
-                  height={containerHeight - bottomBarHeight}
+                  height={meetingType != meetingTypes.MEETING ? containerHeight - topBarHeight - bottomBarHeight : containerHeight - bottomBarHeight}
                   sideBarContainerWidth={sideBarContainerWidth}
                 />
               </div>

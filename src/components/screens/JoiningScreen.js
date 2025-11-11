@@ -17,6 +17,7 @@ import DropDown from "../DropDown";
 import useMediaStream from "../../hooks/useMediaStream";
 import useIsMobile from "../../hooks/useIsMobile";
 import { useMeetingAppContext } from "../../MeetingAppContextDef";
+import { participantModes } from "../../utils/common";
 
 export function JoiningScreen({
   participantName,
@@ -31,6 +32,7 @@ export function JoiningScreen({
   setCustomVideoStream,
   micOn,
   webcamOn,
+  participantModeRef
 }) {
   const {
     selectedWebcam,
@@ -42,8 +44,13 @@ export function JoiningScreen({
     isMicrophonePermissionAllowed,
     setIsCameraPermissionAllowed,
     setIsMicrophonePermissionAllowed,
+    participantMode
   } = useMeetingAppContext()
   const isMobile = useIsMobile();
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const token = params.get("token");
+
 
   const [{ webcams, mics, speakers }, setDevices] = useState({
     webcams: [],
@@ -95,6 +102,13 @@ export function JoiningScreen({
       startMuteListener();
     }
   }, [micOn, audioTrack]);
+
+  useEffect(() => {
+    if(participantMode === participantModes.RECV_ONLY || participantMode === participantModes.SIGNALLING_ONLY){
+      _toggleMic(true)
+      _toggleWebcam(true)
+    }
+  },[participantMode])
 
   useEffect(() => {
     if (micOn) {
@@ -170,10 +184,9 @@ export function JoiningScreen({
     return () => { };
   }, []);
 
-  const _toggleWebcam = () => {
+  const _toggleWebcam = (toggleOff = false) => {
     const videoTrack = videoTrackRef.current;
-
-    if (webcamOn) {
+    if (webcamOn || toggleOff) {
       if (videoTrack) {
         videoTrack.stop();
         setVideoTrack(null);
@@ -186,10 +199,10 @@ export function JoiningScreen({
     }
   };
 
-  const _toggleMic = () => {
+  const _toggleMic = (toggleOff = false) => {
     const audioTrack = audioTrackRef.current;
 
-    if (micOn) {
+    if (micOn || toggleOff) {
       if (audioTrack) {
         audioTrack.stop();
         setAudioTrack(null);
@@ -457,12 +470,25 @@ export function JoiningScreen({
                         }
 
                       />
+                      
+                        <>
+                          <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
+                            {!webcamOn ? (
+                              <p className="text-xl xl:text-lg 2xl:text-xl text-white">
+                                {participantMode != participantModes.SEND_AND_RECV
+                                  ? "You are not permitted to use your microphone and camera."
+                                  : "The camera is off"}
+                              </p>
+                            ) : null}
+                          </div>
+                        </>
+                     
 
                       <div className="absolute xl:bottom-6 bottom-4 left-0 right-0">
                         <div className="container grid grid-flow-col space-x-4 items-center justify-center md:-m-2">
-                          {isMicrophonePermissionAllowed ? (
+                          {isMicrophonePermissionAllowed && participantMode === participantModes.SEND_AND_RECV  ? (
                             <ButtonWithTooltip
-                              onClick={_toggleMic}
+                              onClick={() => _toggleMic()}
                               onState={micOn}
                               mic={true}
                               OnIcon={MicOnIcon}
@@ -472,9 +498,9 @@ export function JoiningScreen({
                             <MicPermissionDenied />
                           )}
 
-                          {isCameraPermissionAllowed ? (
+                          {isCameraPermissionAllowed && participantMode === participantModes.SEND_AND_RECV ? (
                             <ButtonWithTooltip
-                              onClick={_toggleWebcam}
+                              onClick={() => _toggleWebcam()}
                               onState={webcamOn}
                               mic={false}
                               OnIcon={WebcamOnIcon}
@@ -487,7 +513,7 @@ export function JoiningScreen({
                       </div>
                     </div>
 
-                    <>
+                   {participantMode === participantModes.SEND_AND_RECV &&  <>
 
 
                       <div className={`flex mt-3  ${isMobile ? "flex-col" : "flex-row "} `}>
@@ -517,20 +543,18 @@ export function JoiningScreen({
 
 
                       </div>
-                    </>
+                    </>}
                   </div>
                 </div>
               </div>
               <div className="md:col-span-5 2xl:col-span-5 col-span-12 md:relative">
                 <div className="flex flex-1 flex-col items-center justify-center xl:m-16 lg:m-6 md:mt-9 lg:mt-14 xl:mt-20 mt-3 md:absolute md:left-0 md:right-0 md:top-0 md:bottom-0">
                   <MeetingDetailsScreen
+                    participantModeRef={participantModeRef}
                     participantName={participantName}
                     setParticipantName={setParticipantName}
-                    videoTrack={videoTrack}
-                    setVideoTrack={setVideoTrack}
-                    onClickStartMeeting={onClickStartMeeting}
                     onClickJoin={async (id) => {
-                      const token = await getToken();
+
                       const { meetingId, err } = await validateMeeting({
                         roomId: id,
                         token,
@@ -551,16 +575,6 @@ export function JoiningScreen({
                           theme: "light",
                         });
                       }
-                    }}
-                    _handleOnCreateMeeting={async () => {
-                      const token = await getToken();
-                      const { meetingId, err } = await createMeeting({ token });
-
-                      if (meetingId) {
-                        setToken(token);
-                        setMeetingId(meetingId);
-                      }
-                      return { meetingId: meetingId, err: err };
                     }}
                   />
                 </div>
