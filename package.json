@@ -2,7 +2,7 @@
   "name": "react-sdk-example",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://demo.videosdk.live/v1",
+  "homepage": "https://demo.videosdk.live/v1/",
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
