@@ -18,6 +18,8 @@ function App() {
   const [isMeetingStarted, setMeetingStarted] = useState(false);
   const [isMeetingLeft, setIsMeetingLeft] = useState(false);
   const participantModeRef = useRef(null)
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
 
   const isMobile = window.matchMedia(
     "only screen and (max-width: 768px)"
@@ -46,7 +48,8 @@ function App() {
               multiStream: true,
               customCameraVideoTrack: customVideoStream,
               customMicrophoneAudioTrack: customAudioStream,
-              mode: participantModeRef.current
+              mode: participantModeRef.current,
+              signalingBaseUrl: params.get("signalingBaseUrl") ? params.get("signalingBaseUrl") : ""
             }}
             token={token}
             reinitialiseMeetingOnConfigChange={true}

@@ -50,6 +50,7 @@ export function JoiningScreen({
   const search = window.location.search;
   const params = new URLSearchParams(search);
   const token = params.get("token");
+  const signalingBaseUrl = params.get("signalingBaseUrl") 
 
 
   const [{ webcams, mics, speakers }, setDevices] = useState({
@@ -558,6 +559,7 @@ export function JoiningScreen({
                       const { meetingId, err } = await validateMeeting({
                         roomId: id,
                         token,
+                        signalingBaseUrl
                       });
                       if (meetingId === id) {
                         setToken(token);

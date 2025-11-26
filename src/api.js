@@ -38,8 +38,8 @@ export const createMeeting = async ({ token }) => {
 
 };
 
-export const validateMeeting = async ({ roomId, token }) => {
-  const url = `${API_BASE_URL}/v2/rooms/validate/${roomId}`;
+export const validateMeeting = async ({ roomId, token,signalingBaseUrl }) => {
+  const url = `${signalingBaseUrl ? `https://${signalingBaseUrl}` : API_BASE_URL}/v2/rooms/validate/${roomId}`;
 
   const options = {
     method: "GET",
