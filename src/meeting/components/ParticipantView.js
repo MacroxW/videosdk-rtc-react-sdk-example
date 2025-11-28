@@ -134,9 +134,6 @@ function ParticipantsViewer({ isPresenting }) {
           ? 240
           : 160;
 
-
-  console.log("vv", participantMode === participantModes.SEND_AND_RECV || ((participantMode === participantModes.RECV_ONLY || participantMode === participantModes.SIGNALLING_ONLY) && participantIds.length > 0), participantMode)
-
   return (
     <>
       {participantMode === participantModes.SEND_AND_RECV || (participantMode === participantModes.RECV_ONLY && participantIds.length > 0) ? <MemoizedParticipantGrid
