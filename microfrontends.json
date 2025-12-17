@@ -1,0 +1,10 @@
+{
+    "$schema": "https://openapi.vercel.sh/microfrontends.json",
+    "applications": {
+        "serviweb-videosdk": {
+            "development": {
+                "fallback": "serviweb-videosdk.vercel.app"
+            }
+        }
+    }
+}
