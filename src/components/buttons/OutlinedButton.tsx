@@ -153,13 +153,12 @@ export const OutlinedButton = ({
                     >
                       <Lottie
                         loop={lottieOption.loop}
-                        autoPlay={lottieOption.autoPlay}
+                        autoplay={lottieOption.autoPlay}
                         animationData={lottieOption.animationData}
                         rendererSettings={{
                           preserveAspectRatio:
                             lottieOption.rendererSettings.preserveAspectRatio,
                         }}
-                        isClickToPauseDisabled
                       />
                     </div>
                   </div>

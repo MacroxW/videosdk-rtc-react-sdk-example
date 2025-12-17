@@ -80,13 +80,10 @@ export default function DropDownCam({
                                     className={`flex flex-1 w-full text-left`}
                                     value={item?.deviceId}
                                     onClick={() => {
-                                      setSelectedWebcam(
-                                        (s) => ({
-                                          ...s,
-                                          id: item?.deviceId,
-                                          label: item?.label
-                                        })
-                                      );
+                                      setSelectedWebcam({
+                                        id: item?.deviceId,
+                                        label: item?.label
+                                      });
                                       changeWebcam(item?.deviceId);
                                     }}
                                   >

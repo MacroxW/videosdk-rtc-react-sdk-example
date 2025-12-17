@@ -117,7 +117,7 @@ export default function DropDown({
     setRecordingStatus("recording");
 
     try {
-      const media = new MediaRecorder(customAudioStream, { type: mimeType });
+      const media = new MediaRecorder(customAudioStream, { mimeType: mimeType });
       mediaRecorder.current = media;
       mediaRecorder.current.start();
       let localAudioChunks = [];
@@ -230,13 +230,10 @@ export default function DropDown({
                                     className={`flex flex-1 w-full text-left`}
                                     value={item?.deviceId}
                                     onClick={() => {
-                                      setSelectedMic(
-                                        (s) => ({
-                                          ...s,
-                                          label: item?.label,
-                                          id: item?.deviceId,
-                                        })
-                                      );
+                                      setSelectedMic({
+                                        label: item?.label,
+                                        id: item?.deviceId,
+                                      });
                                       changeMic(item?.deviceId);
                                       if (mediaRecorder.current != null && mediaRecorder.current.state == "recording") { stopRecording() }
                                       setRecordingProgress(0)

@@ -106,13 +106,10 @@ export default function DropDownSpeaker({ speakers }) {
                                     className={`flex flex-1 w-full text-left `}
                                     value={item?.deviceId}
                                     onClick={() => {
-                                      setSelectedSpeaker(
-                                        (s) => ({
-                                          ...s,
-                                          id: item?.deviceId,
-                                          label: item?.label
-                                        })
-                                      );
+                                      setSelectedSpeaker({
+                                        id: item?.deviceId,
+                                        label: item?.label
+                                      });
                                     }}
                                   >
                                     {item?.label ? (
