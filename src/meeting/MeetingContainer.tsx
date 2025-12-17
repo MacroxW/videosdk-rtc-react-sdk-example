@@ -12,6 +12,8 @@ import useIsTab from "../hooks/useIsTab";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "react-toastify";
 import { useDeviceContext, useParticipantsContext } from "../contexts";
+import { NotificationService } from "../services/notificationService";
+import { LAYOUT, TIMEOUTS, ERROR_CODES } from "../constants";
 import type { MeetingContainerProps, MeetingError } from "../types";
 
 export function MeetingContainer({
@@ -48,18 +50,18 @@ export function MeetingContainer({
   });
 
   const { useRaisedHandParticipants } = useParticipantsContext();
-  const bottomBarHeight = 60;
+  const bottomBarHeight = LAYOUT.BOTTOM_BAR_HEIGHT;
 
-  const [containerHeight, setContainerHeight] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [localParticipantAllowedJoin, setLocalParticipantAllowedJoin] = useState(null);
-  const [meetingErrorVisible, setMeetingErrorVisible] = useState(false);
-  const [meetingError, setMeetingError] = useState(false);
+  const [containerHeight, setContainerHeight] = useState<number>(0);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [localParticipantAllowedJoin, setLocalParticipantAllowedJoin] = useState<boolean | null>(null);
+  const [meetingErrorVisible, setMeetingErrorVisible] = useState<boolean>(false);
+  const [meetingError, setMeetingError] = useState<MeetingError | null>(null);
 
-  const mMeetingRef = useRef();
-  const containerRef = createRef();
-  const containerHeightRef = useRef();
-  const containerWidthRef = useRef();
+  const mMeetingRef = useRef<any>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerHeightRef = useRef<number>(0);
+  const containerWidthRef = useRef<number>(0);
 
   useEffect(() => {
     containerHeightRef.current = containerHeight;
@@ -101,27 +103,10 @@ export function MeetingContainer({
     setIsMeetingLeft(true);
   };
 
-  const _handleOnRecordingStateChanged = ({ status }) => {
-    if (
-      status === Constants.recordingEvents.RECORDING_STARTED ||
-      status === Constants.recordingEvents.RECORDING_STOPPED
-    ) {
-      toast(
-        `${status === Constants.recordingEvents.RECORDING_STARTED
-          ? "Meeting recording is started"
-          : "Meeting recording is stopped."
-        }`,
-        {
-          position: "bottom-left",
-          autoClose: 4000,
-          hideProgressBar: true,
-          closeButton: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
+  const _handleOnRecordingStateChanged = ({ status }: { status: string }) => {
+    const isStarted = status === Constants.recordingEvents.RECORDING_STARTED;
+    if (isStarted || status === Constants.recordingEvents.RECORDING_STOPPED) {
+      NotificationService.recordingStateChanged(isStarted);
     }
   };
 
@@ -131,7 +116,7 @@ export function MeetingContainer({
   }
 
 
-  function onEntryResponded(participantId, name) {
+  function onEntryResponded(participantId: string, name: string) {
     if (mMeetingRef.current?.localParticipant?.id === participantId) {
       if (name === "allowed") {
         setLocalParticipantAllowedJoin(true);
@@ -139,7 +124,7 @@ export function MeetingContainer({
         setLocalParticipantAllowedJoin(false);
         setTimeout(() => {
           _handleMeetingLeft();
-        }, 3000);
+        }, TIMEOUTS.DENIED_ENTRY_REDIRECT);
       }
     }
   }
@@ -155,22 +140,17 @@ export function MeetingContainer({
     onMeetingLeave();
   }
 
-  const _handleOnError = (data) => {
+  const _handleOnError = (data: { code: number; message: string }) => {
     const { code, message } = data;
     console.log("meetingErr", code, message)
 
-    const joiningErrCodes = [
-      4001, 4002, 4003, 4004, 4005, 4006, 4007, 4008, 4009, 4010,
-    ];
+    const isJoiningError = ERROR_CODES.JOINING_ERRORS.includes(code);
+    const isCriticalError = `${code}`.startsWith(ERROR_CODES.CRITICAL_ERROR_PREFIX);
 
-    const isJoiningError = joiningErrCodes.findIndex((c) => c === code) !== -1;
-    const isCriticalError = `${code}`.startsWith("500");
-
-    new Audio(
+    NotificationService.error(
+      isJoiningError ? "Unable to join meeting!" : message,
       isCriticalError
-        ? `https://static.videosdk.live/prebuilt/notification_critical_err.mp3`
-        : `https://static.videosdk.live/prebuilt/notification_err.mp3`
-    ).play();
+    );
 
     setMeetingErrorVisible(true);
     setMeetingError({
@@ -184,16 +164,7 @@ export function MeetingContainer({
     onEntryResponded,
     onMeetingJoined,
     onMeetingStateChanged: ({state}) => {
-      toast(`Meeting is in ${state} state`, {
-        position: "bottom-left",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeButton: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      NotificationService.meetingStateChanged(state);
     },
     onMeetingLeft,
     onError: _handleOnError,
@@ -209,7 +180,7 @@ export function MeetingContainer({
 
       setParticipantsData(participantIds);
       console.log("Setting participants");
-    }, 500);
+    }, TIMEOUTS.PARTICIPANT_DEBOUNCE);
 
 
     return () => clearTimeout(debounceTimeout);
@@ -224,26 +195,11 @@ export function MeetingContainer({
   usePubSub("RAISE_HAND", {
     onMessageReceived: (data) => {
       const localParticipantId = mMeeting?.localParticipant?.id;
-
       const { senderId, senderName } = data;
-
       const isLocal = senderId === localParticipantId;
 
-      new Audio(
-        `https://static.videosdk.live/prebuilt/notification.mp3`
-      ).play();
-
-      toast(`${isLocal ? "You" : nameTructed(senderName, 15)} raised hand 🖐🏼`, {
-        position: "bottom-left",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeButton: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-
+      const displayName = isLocal ? "You" : nameTructed(senderName, 15);
+      NotificationService.raiseHand(displayName);
       participantRaisedHand(senderId);
     },
   });
@@ -251,31 +207,11 @@ export function MeetingContainer({
   usePubSub("CHAT", {
     onMessageReceived: (data) => {
       const localParticipantId = mMeeting?.localParticipant?.id;
-
       const { senderId, senderName, message } = data;
-
       const isLocal = senderId === localParticipantId;
 
       if (!isLocal) {
-        new Audio(
-          `https://static.videosdk.live/prebuilt/notification.mp3`
-        ).play();
-
-        toast(
-          `${trimSnackBarText(
-            `${nameTructed(senderName, 15)} says: ${message}`
-          )}`,
-          {
-            position: "bottom-left",
-            autoClose: 4000,
-            hideProgressBar: true,
-            closeButton: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          }
-        );
+        NotificationService.chatMessage(nameTructed(senderName, 15), trimSnackBarText(message));
       }
     },
   });
@@ -317,15 +253,20 @@ export function MeetingContainer({
         ) : (
           !mMeeting.isMeetingJoined && <WaitingToJoinScreen />
         )}
-        <ConfirmBox
-          open={meetingErrorVisible}
-          successText="OKAY"
-          onSuccess={() => {
-            setMeetingErrorVisible(false);
-          }}
-          title={`Error Code: ${meetingError.code}`}
-          subTitle={meetingError.message}
-        />
+        {meetingError && (
+          <ConfirmBox
+            open={meetingErrorVisible}
+            successText="OKAY"
+            onSuccess={() => {
+              setMeetingErrorVisible(false);
+            }}
+            title={`Error Code: ${meetingError.code}`}
+            subTitle={meetingError.message}
+            rejectText=""
+            onReject={() => {}}
+            subTitleColor=""
+          />
+        )}
       </div>
     </div>
   );
