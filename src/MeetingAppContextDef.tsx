@@ -1,23 +1,30 @@
 import { useContext, createContext, useState, useEffect, useRef } from "react";
+import type { MeetingAppContextType, MeetingAppProviderProps, Device, SideBarMode, RaisedHandParticipant } from "./types";
 
-export const MeetingAppContext = createContext();
+export const MeetingAppContext = createContext<MeetingAppContextType | undefined>(undefined);
 
-export const useMeetingAppContext = () => useContext(MeetingAppContext);
+export const useMeetingAppContext = (): MeetingAppContextType => {
+  const context = useContext(MeetingAppContext);
+  if (!context) {
+    throw new Error('useMeetingAppContext must be used within MeetingAppProvider');
+  }
+  return context;
+};
 
-export const MeetingAppProvider = ({ children }) => {
-  const [selectedMic, setSelectedMic] = useState({ id: null, label: null });
-  const [selectedWebcam, setSelectedWebcam] = useState({ id: null, label: null });
-  const [selectedSpeaker, setSelectedSpeaker] = useState({ id: null, label: null });
-  const [isCameraPermissionAllowed, setIsCameraPermissionAllowed] = useState(null);
-  const [isMicrophonePermissionAllowed, setIsMicrophonePermissionAllowed] = useState(null);
-  const [raisedHandsParticipants, setRaisedHandsParticipants] = useState([]);
-  const [sideBarMode, setSideBarMode] = useState(null);
-  const [pipMode, setPipMode] = useState(false);
+export const MeetingAppProvider: React.FC<MeetingAppProviderProps> = ({ children }) => {
+  const [selectedMic, setSelectedMic] = useState<Device>({ id: null, label: null });
+  const [selectedWebcam, setSelectedWebcam] = useState<Device>({ id: null, label: null });
+  const [selectedSpeaker, setSelectedSpeaker] = useState<Device>({ id: null, label: null });
+  const [isCameraPermissionAllowed, setIsCameraPermissionAllowed] = useState<boolean | null>(null);
+  const [isMicrophonePermissionAllowed, setIsMicrophonePermissionAllowed] = useState<boolean | null>(null);
+  const [raisedHandsParticipants, setRaisedHandsParticipants] = useState<RaisedHandParticipant[]>([]);
+  const [sideBarMode, setSideBarMode] = useState<SideBarMode>(null);
+  const [pipMode, setPipMode] = useState<boolean>(false);
 
   const useRaisedHandParticipants = () => {
-    const raisedHandsParticipantsRef = useRef();
+    const raisedHandsParticipantsRef = useRef<RaisedHandParticipant[]>([]);
 
-    const participantRaisedHand = (participantId) => {
+    const participantRaisedHand = (participantId: string) => {
       const raisedHandsParticipants = [...raisedHandsParticipantsRef.current];
 
       const newItem = { participantId, raisedHandOn: new Date().getTime() };
@@ -45,7 +52,7 @@ export const MeetingAppProvider = ({ children }) => {
       const now = new Date().getTime();
 
       const persisted = raisedHandsParticipants.filter(({ raisedHandOn }) => {
-        return parseInt(raisedHandOn) + 15000 > parseInt(now);
+        return raisedHandOn + 15000 > now;
       });
 
       if (raisedHandsParticipants.length !== persisted.length) {

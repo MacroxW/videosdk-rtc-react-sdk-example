@@ -12,20 +12,21 @@ import useIsTab from "../hooks/useIsTab";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "react-toastify";
 import { useMeetingAppContext } from "../MeetingAppContextDef";
+import type { MeetingContainerProps, MeetingError } from "../types";
 
 export function MeetingContainer({
   onMeetingLeave,
   setIsMeetingLeft,
-}) {
+}: MeetingContainerProps): React.ReactElement {
   const {
     setSelectedMic,
     setSelectedWebcam,
     setSelectedSpeaker,
   } = useMeetingAppContext();
 
-  const [participantsData, setParticipantsData] = useState([]);
+  const [participantsData, setParticipantsData] = useState<string[]>([]);
 
-  const ParticipantMicStream = memo(({ participantId }) => {
+  const ParticipantMicStream = memo(({ participantId }: { participantId: string }) => {
     // Individual hook for each participant
     const { micStream, isLocal } = useParticipant(participantId);
 
@@ -44,7 +45,7 @@ export function MeetingContainer({
     }, [micStream, participantId]);
 
     return null;
-  }, [participantsData]);
+  });
 
   const { useRaisedHandParticipants } = useMeetingAppContext();
   const bottomBarHeight = 60;

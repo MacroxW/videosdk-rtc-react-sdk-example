@@ -1,21 +1,20 @@
 import { MeetingProvider } from "@videosdk.live/react-sdk";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MeetingAppProvider } from "./MeetingAppContextDef";
 import { MeetingContainer } from "./meeting/MeetingContainer";
 import { LeaveScreen } from "./components/screens/LeaveScreen";
-import { JoiningScreen } from "./components/screens/JoiningScreen"
+import { JoiningScreen } from "./components/screens/JoiningScreen";
 
-function App() {
-  const [token, setToken] = useState("");
-  const [meetingId, setMeetingId] = useState("");
-  const [participantName, setParticipantName] = useState("");
-  const [micOn, setMicOn] = useState(false);
-  const [webcamOn, setWebcamOn] = useState(false);
-  const [customAudioStream, setCustomAudioStream] = useState(null);
-  const [customVideoStream, setCustomVideoStream] = useState(null)
-  const [isMeetingStarted, setMeetingStarted] = useState(false);
-  const [isMeetingLeft, setIsMeetingLeft] = useState(false);
+function App(): React.ReactElement {
+  const [token, setToken] = useState<string>("");
+  const [meetingId, setMeetingId] = useState<string>("");
+  const [participantName, setParticipantName] = useState<string>("");
+  const [micOn, setMicOn] = useState<boolean>(false);
+  const [webcamOn, setWebcamOn] = useState<boolean>(false);
+  const [customAudioStream, setCustomAudioStream] = useState<MediaStream | null>(null);
+  const [customVideoStream, setCustomVideoStream] = useState<MediaStream | null>(null);
+  const [isMeetingStarted, setMeetingStarted] = useState<boolean>(false);
+  const [isMeetingLeft, setIsMeetingLeft] = useState<boolean>(false);
 
   const isMobile = window.matchMedia(
     "only screen and (max-width: 768px)"
