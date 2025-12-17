@@ -12,7 +12,7 @@ root.render(
       toastClassName={(context) =>
         `${context?.defaultClassName} relative flex py-4 px-3 rounded overflow-hidden cursor-pointer bg-white shadow-lg`
       }
-      bodyClassName={(context) =>
+      className={(context) =>
         `${context?.defaultClassName} text-[#000] text-base font-bold`
       }
       position="bottom-left"

@@ -41,7 +41,8 @@ function App(): React.ReactElement {
               name: participantName ? participantName : "TestUser",
               multiStream: true,
               customCameraVideoTrack: customVideoStream,
-              customMicrophoneAudioTrack: customAudioStream
+              customMicrophoneAudioTrack: customAudioStream,
+              debugMode: true
             }}
             token={token}
             reinitialiseMeetingOnConfigChange={true}
