@@ -11,7 +11,7 @@ import NetworkIcon from "../icons/NetworkIcon";
 import SpeakerIcon from "../icons/SpeakerIcon";
 import { getQualityScore, nameTructed } from "../utils/common";
 import * as ReactDOM from "react-dom";
-import { useMeetingAppContext } from "../MeetingAppContextDef";
+import { useDeviceContext } from "../contexts";
 export const CornerDisplayName = ({
   participantId,
   isPresenting,
@@ -31,7 +31,7 @@ export const CornerDisplayName = ({
   const [statsBoxHeightRef, setStatsBoxHeightRef] = useState(null);
   const [statsBoxWidthRef, setStatsBoxWidthRef] = useState(null);
 
-  const [coords, setCoords] = useState({}); // takes current button coordinates
+  const [coords, setCoords] = useState<{ top?: number; left?: number }>({}); // takes current button coordinates
 
   const statsBoxHeight = useMemo(
     () => statsBoxHeightRef?.offsetHeight,
@@ -66,9 +66,9 @@ export const CornerDisplayName = ({
   } = useParticipant(participantId);
 
   const statsIntervalIdRef = useRef(null);
-  const [score, setScore] = useState({});
-  const [audioStats, setAudioStats] = useState({});
-  const [videoStats, setVideoStats] = useState({});
+  const [score, setScore] = useState<number>(100);
+  const [audioStats, setAudioStats] = useState<any[]>([]);
+  const [videoStats, setVideoStats] = useState<any[]>([]);
 
   const updateStats = async () => {
     let stats = [];
@@ -123,14 +123,14 @@ export const CornerDisplayName = ({
       label: "Packet Loss",
       audio: audioStats
         ? audioStats[0]?.packetsLost
-          ? `${parseFloat(
+          ? `${(
             (audioStats[0]?.packetsLost * 100) / audioStats[0]?.totalPackets
           ).toFixed(2)}%`
           : "-"
         : "-",
       video: videoStats
         ? videoStats[0]?.packetsLost
-          ? `${parseFloat(
+          ? `${(
             (videoStats[0]?.packetsLost * 100) / videoStats[0]?.totalPackets
           ).toFixed(2)}%`
           : "-"
@@ -266,7 +266,8 @@ export const CornerDisplayName = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      const rect = e.target.getBoundingClientRect();
+                      const target = e.target as HTMLElement;
+                      const rect = target.getBoundingClientRect();
                       setCoords({
                         left: Math.round(rect.x + rect.width / 2),
                         top: Math.round(rect.y + window.scrollY),
@@ -418,7 +419,7 @@ export function ParticipantView({ participantId }) {
     isActiveSpeaker,
   } = useParticipant(participantId);
 
-  const { selectedSpeaker } = useMeetingAppContext();
+  const { selectedSpeaker } = useDeviceContext();
   const micRef = useRef(null);
   const [mouseOver, setMouseOver] = useState(false);
 

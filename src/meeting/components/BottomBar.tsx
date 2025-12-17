@@ -87,7 +87,10 @@ function PipBTN({ isMobile, isTab }) {
       pipVideo.addEventListener("leavepictureinpicture", (event) => {
         pipWindowRef.current = null;
         setPipMode(false);
-        pipVideo.srcObject.getTracks().forEach((track) => track.stop());
+        const stream = pipVideo.srcObject as MediaStream;
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+        }
       });
 
       //These will draw all the video elements in to the Canvas
