@@ -11,7 +11,7 @@ import useIsMobile from "../hooks/useIsMobile";
 import useIsTab from "../hooks/useIsTab";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "react-toastify";
-import { useMeetingAppContext } from "../MeetingAppContextDef";
+import { useMeetingAppContext } from "../contexts";
 import type { MeetingContainerProps, MeetingError } from "../types";
 
 export function MeetingContainer({

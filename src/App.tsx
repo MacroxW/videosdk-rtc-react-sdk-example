@@ -1,6 +1,6 @@
 import { MeetingProvider } from "@videosdk.live/react-sdk";
 import { useEffect, useState } from "react";
-import { MeetingAppProvider } from "./MeetingAppContextDef";
+import { MeetingAppProvider } from "./contexts";
 import { MeetingContainer } from "./meeting/MeetingContainer";
 import { LeaveScreen } from "./components/screens/LeaveScreen";
 import { JoiningScreen } from "./components/screens/JoiningScreen";
