@@ -48,8 +48,8 @@ const ChatInput = ({ inputHeight }) => {
       className="w-full flex items-center px-2"
       style={{ height: inputHeight }}
     >
-      <div class="relative  w-full">
-        <span class="absolute inset-y-0 right-0 flex mr-2 rotate-90 ">
+      <div className="relative  w-full">
+        <span className="absolute inset-y-0 right-0 flex mr-2 rotate-90 ">
           <button
             disabled={message.length < 2}
             type="submit"
@@ -79,7 +79,6 @@ const ChatInput = ({ inputHeight }) => {
           type="text"
           className="py-4 text-base text-white border-gray-400 border bg-gray-750 rounded pr-10 pl-2 focus:outline-none w-full"
           placeholder="Write your message"
-          autocomplete="off"
           ref={input}
           value={message}
           onChange={(e) => {
@@ -113,7 +112,7 @@ const ChatMessages = ({ listHeight }) => {
   const listRef = useRef(null);
   const { messages } = usePubSub("CHAT");
 
-  const scrollToBottom = (data) => {
+  const scrollToBottom = (data?: any) => {
     if (!data) {
       if (listRef.current) {
         listRef.current.scrollTop = listRef.current.scrollHeight;

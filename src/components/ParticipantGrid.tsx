@@ -1,5 +1,5 @@
 import React from "react";
-import { useMeetingAppContext } from "../MeetingAppContextDef";
+import { useUIContext } from "../contexts";
 import { ParticipantView } from "./ParticipantView";
 
 const MemoizedParticipant = React.memo(
@@ -10,7 +10,7 @@ const MemoizedParticipant = React.memo(
 );
 
 function ParticipantGrid({ participantIds, isPresenting }) {
-  const { sideBarMode } = useMeetingAppContext();
+  const { sideBarMode } = useUIContext();
   const isMobile = window.matchMedia(
     "only screen and (max-width: 768px)"
   ).matches;
