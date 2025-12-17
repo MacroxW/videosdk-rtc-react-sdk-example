@@ -58,7 +58,7 @@ export function MeetingContainer({
   const [meetingErrorVisible, setMeetingErrorVisible] = useState<boolean>(false);
   const [meetingError, setMeetingError] = useState<MeetingError | null>(null);
 
-  const mMeetingRef = useRef<any>();
+  const mMeetingRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const containerHeightRef = useRef<number>(0);
   const containerWidthRef = useRef<number>(0);
@@ -116,9 +116,9 @@ export function MeetingContainer({
   }
 
 
-  function onEntryResponded(participantId: string, name: string) {
+  function onEntryResponded({ participantId, decision }: { participantId: string; decision: string }) {
     if (mMeetingRef.current?.localParticipant?.id === participantId) {
-      if (name === "allowed") {
+      if (decision === "allowed") {
         setLocalParticipantAllowedJoin(true);
       } else {
         setLocalParticipantAllowedJoin(false);
@@ -140,12 +140,12 @@ export function MeetingContainer({
     onMeetingLeave();
   }
 
-  const _handleOnError = (data: { code: number; message: string }) => {
-    const { code, message } = data;
+  const _handleOnError = ({ code, message }: { code: string; message: string }) => {
     console.log("meetingErr", code, message)
 
-    const isJoiningError = ERROR_CODES.JOINING_ERRORS.includes(code);
-    const isCriticalError = `${code}`.startsWith(ERROR_CODES.CRITICAL_ERROR_PREFIX);
+    const codeNum = parseInt(code);
+    const isJoiningError = ERROR_CODES.JOINING_ERRORS.includes(codeNum as any);
+    const isCriticalError = code.startsWith(ERROR_CODES.CRITICAL_ERROR_PREFIX);
 
     NotificationService.error(
       isJoiningError ? "Unable to join meeting!" : message,
@@ -154,7 +154,7 @@ export function MeetingContainer({
 
     setMeetingErrorVisible(true);
     setMeetingError({
-      code,
+      code: codeNum,
       message: isJoiningError ? "Unable to join meeting!" : message,
     });
   };
@@ -251,7 +251,7 @@ export function MeetingContainer({
             <></>
           )
         ) : (
-          !mMeeting.isMeetingJoined && <WaitingToJoinScreen />
+          <WaitingToJoinScreen />
         )}
         {meetingError && (
           <ConfirmBox

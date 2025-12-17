@@ -5,7 +5,6 @@ import MicOnIcon from "../../icons/ParticipantTabPanel/MicOnIcon";
 import RaiseHand from "../../icons/ParticipantTabPanel/RaiseHand";
 import VideoCamOffIcon from "../../icons/ParticipantTabPanel/VideoCamOffIcon";
 import VideoCamOnIcon from "../../icons/ParticipantTabPanel/VideoCamOnIcon";
-import { useMeetingAppContext } from "../../MeetingAppContextDef";
 import { nameTructed } from "../../utils/helper";
 
 function ParticipantListItem({ participantId, raisedHand }) {
@@ -43,8 +42,7 @@ function ParticipantListItem({ participantId, raisedHand }) {
   );
 }
 
-export function ParticipantPanel({ panelHeight }) {
-  const { raisedHandsParticipants } = useMeetingAppContext();
+export function ParticipantPanel({ panelHeight, raisedHandsParticipants }) {
   const mMeeting = useMeeting();
   const participants = mMeeting.participants;
 
@@ -79,13 +77,11 @@ export function ParticipantPanel({ panelHeight }) {
     return combined;
   }, [raisedHandsParticipants, participants]);
 
-  const filterParticipants = (sortedRaisedHandsParticipants) =>
-    sortedRaisedHandsParticipants;
+  const filterParticipants = (sortedRaisedHandsParticipants) => sortedRaisedHandsParticipants;
 
   const part = useMemo(
-    () => filterParticipants(sortedRaisedHandsParticipants, participants),
-
-    [sortedRaisedHandsParticipants, participants]
+    () => filterParticipants(sortedRaisedHandsParticipants),
+    [sortedRaisedHandsParticipants]
   );
 
   return (

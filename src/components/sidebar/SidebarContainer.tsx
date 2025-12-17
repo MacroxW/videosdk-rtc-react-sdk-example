@@ -7,7 +7,7 @@ import { ChatPanel } from "./ChatPanel";
 import { ParticipantPanel } from "./ParticipantPanel";
 import { Dialog, Transition } from "@headlessui/react";
 import { useMediaQuery } from "react-responsive";
-import { useMeetingAppContext } from "../../MeetingAppContextDef";
+import { useUIContext, useParticipantsContext } from "../../contexts";
 
 const SideBarTabView = ({
   height,
@@ -17,9 +17,10 @@ const SideBarTabView = ({
   panelHeaderPadding,
   panelPadding,
   handleClose,
+  raisedHandsParticipants,
 }) => {
   const { participants } = useMeeting();
-  const { sideBarMode } = useMeetingAppContext();
+  const { sideBarMode } = useUIContext();
 
   return (
     <div
@@ -71,7 +72,10 @@ const SideBarTabView = ({
               </div>
             )}
             {sideBarMode === "PARTICIPANTS" ? (
-              <ParticipantPanel panelHeight={panelHeight} />
+              <ParticipantPanel 
+                panelHeight={panelHeight} 
+                raisedHandsParticipants={raisedHandsParticipants}
+              />
             ) : sideBarMode === "CHAT" ? (
               <ChatPanel panelHeight={panelHeight} />
             ) : null}
@@ -83,8 +87,8 @@ const SideBarTabView = ({
 };
 
 export function SidebarConatiner({ height, sideBarContainerWidth }) {
-  const { raisedHandsParticipants, sideBarMode, setSideBarMode } =
-    useMeetingAppContext();
+  const { raisedHandsParticipants } = useParticipantsContext();
+  const { sideBarMode, setSideBarMode } = useUIContext();
   const isMobile = useIsMobile();
   const isTab = useIsTab();
   const isLGDesktop = useMediaQuery({ minWidth: 1024, maxWidth: 1439 });
@@ -155,11 +159,11 @@ export function SidebarConatiner({ height, sideBarContainerWidth }) {
                     height={"100%"}
                     sideBarContainerWidth={"100%"}
                     panelHeight={height}
-                    raisedHandsParticipants={raisedHandsParticipants}
                     panelHeaderHeight={panelHeaderHeight}
                     panelHeaderPadding={panelHeaderPadding}
                     panelPadding={panelPadding}
                     handleClose={handleClose}
+                    raisedHandsParticipants={raisedHandsParticipants}
                   />
                 </Dialog.Panel>
               </div>
@@ -172,11 +176,11 @@ export function SidebarConatiner({ height, sideBarContainerWidth }) {
         height={paddedHeight}
         sideBarContainerWidth={sideBarContainerWidth}
         panelHeight={paddedHeight - panelHeaderHeight - panelHeaderPadding}
-        raisedHandsParticipants={raisedHandsParticipants}
         panelHeaderHeight={panelHeaderHeight}
         panelHeaderPadding={panelHeaderPadding}
         panelPadding={panelPadding}
         handleClose={handleClose}
+        raisedHandsParticipants={raisedHandsParticipants}
       />
     )
   ) : (
