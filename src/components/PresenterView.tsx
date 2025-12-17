@@ -21,7 +21,7 @@ export function PresenterView({ height }) {
   } = useParticipant(presenterId);
 
 
-  const audioPlayer = useRef();
+  const audioPlayer = useRef(null);
 
   useEffect(() => {
     if (

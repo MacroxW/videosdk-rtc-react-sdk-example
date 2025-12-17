@@ -65,7 +65,7 @@ export const CornerDisplayName = ({
     getShareAudioStats
   } = useParticipant(participantId);
 
-  const statsIntervalIdRef = useRef();
+  const statsIntervalIdRef = useRef(null);
   const [score, setScore] = useState({});
   const [audioStats, setAudioStats] = useState({});
   const [videoStats, setVideoStats] = useState({});
@@ -327,10 +327,10 @@ export const CornerDisplayName = ({
                               }}
                             >
                               <p className="text-sm text-white font-semibold">{`Quality Score : ${score > 7
-                                  ? "Good"
-                                  : score > 4
-                                    ? "Average"
-                                    : "Poor"
+                                ? "Good"
+                                : score > 4
+                                  ? "Average"
+                                  : "Poor"
                                 }`}</p>
 
                               <button

@@ -42,9 +42,9 @@ export default function DropDown({
   }
 
 
-  const audioTrackRef = useRef();
-  const intervalRef = useRef();
-  const audioAnalyserIntervalRef = useRef();
+  const audioTrackRef = useRef(null);
+  const intervalRef = useRef(null);
+  const audioAnalyserIntervalRef = useRef(null);
   const mediaRecorder = useRef(null);
 
   const mimeType = "audio/webm";

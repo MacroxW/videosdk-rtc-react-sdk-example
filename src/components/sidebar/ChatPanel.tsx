@@ -41,7 +41,7 @@ const ChatMessage = ({ senderId, senderName, text, timestamp }) => {
 const ChatInput = ({ inputHeight }) => {
   const [message, setMessage] = useState("");
   const { publish } = usePubSub("CHAT");
-  const input = useRef();
+  const input = useRef(null);
 
   return (
     <div
@@ -110,7 +110,7 @@ const ChatInput = ({ inputHeight }) => {
 };
 
 const ChatMessages = ({ listHeight }) => {
-  const listRef = useRef();
+  const listRef = useRef(null);
   const { messages } = usePubSub("CHAT");
 
   const scrollToBottom = (data) => {

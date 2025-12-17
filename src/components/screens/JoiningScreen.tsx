@@ -65,14 +65,14 @@ export function JoiningScreen({
   const [didDeviceChange, setDidDeviceChange] = useState(false);
   const [testSpeaker, setTestSpeaker] = useState(false)
 
-  const videoPlayerRef = useRef();
-  const audioPlayerRef = useRef();
-  const videoTrackRef = useRef();
-  const audioTrackRef = useRef();
-  const audioAnalyserIntervalRef = useRef();
-  const permissonAvaialble = useRef();
-  const webcamRef = useRef();
-  const micRef = useRef();
+  const videoPlayerRef = useRef(null);
+  const audioPlayerRef = useRef(null);
+  const videoTrackRef = useRef(null);
+  const audioTrackRef = useRef(null);
+  const audioAnalyserIntervalRef = useRef(null);
+  const permissonAvaialble = useRef(null);
+  const webcamRef = useRef(null);
+  const micRef = useRef(null);
 
   useEffect(() => {
     webcamRef.current = webcamOn;
@@ -399,7 +399,7 @@ export function JoiningScreen({
   }, [])
 
   const ButtonWithTooltip = ({ onClick, onState, OnIcon, OffIcon }) => {
-    const btnRef = useRef();
+    const btnRef = useRef(null);
     return (
       <>
         <div>

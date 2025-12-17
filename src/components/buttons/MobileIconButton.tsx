@@ -21,8 +21,8 @@ export const MobileIconButton = ({
   const [mouseDown, setMouseDown] = useState(false);
 
   const [tooltipShow, setTooltipShow] = useState(false);
-  const btnRef = useRef();
-  const tooltipRef = useRef();
+  const btnRef = useRef(null);
+  const tooltipRef = useRef(null);
 
   const openTooltip = () => {
     createPopper(btnRef.current, tooltipRef.current, {
@@ -80,7 +80,7 @@ export const MobileIconButton = ({
               }}
             >
               {badge && (
-                <div class="inline-flex absolute -top-2 -right-3 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-black rounded-full">
+                <div className="inline-flex absolute -top-2 -right-3 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-black rounded-full">
                   {badge}
                 </div>
               )}

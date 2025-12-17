@@ -24,9 +24,9 @@ const OutlineIconTextButton = ({
   const [blinkingState, setBlinkingState] = useState(1);
   const [tooltipShow, setTooltipShow] = useState(false);
 
-  const btnRef = useRef();
-  const tooltipRef = useRef();
-  const intervalRef = useRef();
+  const btnRef = useRef(null);
+  const tooltipRef = useRef(null);
+  const intervalRef = useRef(null);
 
   const openTooltip = () => {
     createPopper(btnRef.current, tooltipRef.current, {
@@ -70,17 +70,15 @@ const OutlineIconTextButton = ({
     <>
       <div ref={btnRef} onMouseEnter={openTooltip} onMouseLeave={closeTooltip}>
         <button
-          className={`flex items-center justify-center  rounded-lg ${
-            bgColor ? `${bgColor}` : isFocused ? "bg-white" : "bg-gray-750"
-          } ${
-            mouseOver
+          className={`flex items-center justify-center  rounded-lg ${bgColor ? `${bgColor}` : isFocused ? "bg-white" : "bg-gray-750"
+            } ${mouseOver
               ? "border-2 border-transparent border-solid"
               : focusBGColor
-              ? `border-2 border-[${focusBGColor}] border-solid`
-              : bgColor
-              ? "border-2 border-transparent border-solid"
-              : "border-2 border-solid border-[#ffffff33]"
-          } md:m-2 m-1 cursor-pointer`}
+                ? `border-2 border-[${focusBGColor}] border-solid`
+                : bgColor
+                  ? "border-2 border-transparent border-solid"
+                  : "border-2 border-solid border-[#ffffff33]"
+            } md:m-2 m-1 cursor-pointer`}
           style={{
             transition: "all 200ms",
             transitionTimingFunction: "ease-in-out",
@@ -115,10 +113,9 @@ const OutlineIconTextButton = ({
               lottieOption ? (
                 <div className="flex items-center justify-center">
                   <div
-                    className={`lg:h-[${22 * (large ? 1 : 1)}px] w-[${
-                      (22 * (large ? 1 : 1) * lottieOption?.width) /
+                    className={`lg:h-[${22 * (large ? 1 : 1)}px] w-[${(22 * (large ? 1 : 1) * lottieOption?.width) /
                       lottieOption?.height
-                    }px]`}
+                      }px]`}
                     style={{
                       height: iconSize,
                       width:
@@ -139,13 +136,12 @@ const OutlineIconTextButton = ({
                 </div>
               ) : (
                 <p
-                  className={`text-sm font-semibold leading-6 ${
-                    isFocused
+                  className={`text-sm font-semibold leading-6 ${isFocused
                       ? "text-[#1c1f2e]"
                       : textColor
-                      ? textColor
-                      : "text-white"
-                  }`}
+                        ? textColor
+                        : "text-white"
+                    }`}
                 >
                   {buttonText}
                 </p>
@@ -158,9 +154,8 @@ const OutlineIconTextButton = ({
       </div>
       <div
         style={{ zIndex: 999 }}
-        className={`${
-          tooltipShow ? "" : "hidden"
-        } overflow-hidden flex flex-col items-center justify-center pt-1`}
+        className={`${tooltipShow ? "" : "hidden"
+          } overflow-hidden flex flex-col items-center justify-center pt-1`}
         ref={tooltipRef}
       >
         <div className={"rounded-md p-1.5 bg-black "}>

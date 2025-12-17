@@ -195,8 +195,8 @@ const MicBTN = () => {
   };
 
   const [tooltipShow, setTooltipShow] = useState(false);
-  const btnRef = useRef();
-  const tooltipRef = useRef();
+  const btnRef = useRef(null);
+  const tooltipRef = useRef(null);
 
   const openTooltip = () => {
     createPopper(btnRef.current, tooltipRef.current, {
@@ -364,8 +364,8 @@ const WebCamBTN = () => {
   };
 
   const [tooltipShow, setTooltipShow] = useState(false);
-  const btnRef = useRef();
-  const tooltipRef = useRef();
+  const btnRef = useRef(null);
+  const tooltipRef = useRef(null);
 
   const openTooltip = () => {
     createPopper(btnRef.current, tooltipRef.current, {
@@ -737,7 +737,7 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
     );
   };
 
-  const tollTipEl = useRef();
+  const tollTipEl = useRef(null);
   const isMobile = useIsMobile();
   const isTab = useIsTab();
   const [open, setOpen] = useState(false);
@@ -822,8 +822,8 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
                         return (
                           <div
                             className={`grid items-center justify-center ${icon === BottomBarButtonTypes.MEETING_ID_COPY
-                                ? "col-span-7 sm:col-span-5 md:col-span-3"
-                                : "col-span-4 sm:col-span-3 md:col-span-2"
+                              ? "col-span-7 sm:col-span-5 md:col-span-3"
+                              : "col-span-4 sm:col-span-3 md:col-span-2"
                               }`}
                           >
                             {icon === BottomBarButtonTypes.RAISE_HAND ? (
