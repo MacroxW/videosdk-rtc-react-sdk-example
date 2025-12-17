@@ -6,7 +6,7 @@ import DropMIC from '../icons/DropDown/DropMIC';
 import TestMic from "../icons/DropDown/TestMic"
 import TestMicOff from '../icons/DropDown/TestMicOff';
 import PauseButton from '../icons/DropDown/PauseButton';
-import { useMeetingAppContext } from '../MeetingAppContextDef';
+import { useDeviceContext } from '../contexts';
 import useIsMobile from '../hooks/useIsMobile';
 
 export default function DropDown({
@@ -26,7 +26,7 @@ export default function DropDown({
     selectedMic,
     selectedSpeaker,
     isMicrophonePermissionAllowed
-  } = useMeetingAppContext();
+  } = useDeviceContext();
   const [audioProgress, setAudioProgress] = useState(0);
   const [recordingProgress, setRecordingProgress] = useState(0)
   const [recordingStatus, setRecordingStatus] = useState("inactive");
@@ -319,4 +319,3 @@ export default function DropDown({
     </>
   )
 }
-

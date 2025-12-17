@@ -31,11 +31,12 @@ import { MobileIconButton } from "../../components/buttons/MobileIconButton";
 import { sideBarModes } from "../../utils/common";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import { createPopper } from "@popperjs/core";
-import { useMeetingAppContext } from "../../MeetingAppContextDef";
+import { useUIContext, useDeviceContext } from "../../contexts";
 import useMediaStream from "../../hooks/useMediaStream";
+import { SideBarMode } from "../../types/MeetingTypes";
 
 function PipBTN({ isMobile, isTab }) {
-  const { pipMode, setPipMode } = useMeetingAppContext();
+  const { pipMode, setPipMode } = useUIContext();
 
   const getRowCount = (length) => {
     return length > 2 ? 2 : length > 0 ? 1 : 0;
@@ -130,7 +131,7 @@ function PipBTN({ isMobile, isTab }) {
 
   return isMobile || isTab ? (
     <MobileIconButton
-      id="pip-btn"
+      btnID="pip-btn"
       tooltipTitle={pipMode ? "Stop PiP" : "Start Pip"}
       buttonText={pipMode ? "Stop PiP" : "Start Pip"}
       isFocused={pipMode}
@@ -139,6 +140,12 @@ function PipBTN({ isMobile, isTab }) {
         togglePipMode();
       }}
       disabled={false}
+      badge={null}
+      bgColor={null}
+      disabledOpacity={null}
+      focusIconColor={null}
+      large={null}
+      lottieOption={null}
     />
   ) : (
     <OutlinedButton
@@ -149,6 +156,18 @@ function PipBTN({ isMobile, isTab }) {
       isFocused={pipMode}
       tooltip={pipMode ? "Stop PiP" : "Start Pip"}
       disabled={false}
+      bgColor={null}
+      badge={null}
+      lottieOption={null}
+      disabledOpacity={null}
+      renderRightComponent={null}
+      large={null}
+      btnID={null}
+      color={null}
+      focusIconColor={null}
+      isRequestProcessing={null}
+      borderColor={null}
+      buttonText={null}
     />
   );
 }
@@ -160,7 +179,7 @@ const MicBTN = () => {
     selectedSpeaker,
     setSelectedSpeaker,
     isMicrophonePermissionAllowed,
-  } = useMeetingAppContext();
+  } = useDeviceContext();
 
   const { getMicrophones, getPlaybackDevices } = useMediaDevice();
 
@@ -220,6 +239,15 @@ const MicBTN = () => {
         isFocused={localMicOn}
         focusIconColor={localMicOn && "white"}
         tooltip={"Toggle Mic"}
+        badge={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        isRequestProcessing={null}
+        buttonText={null}
         renderRightComponent={() => {
           return (
             <>
@@ -280,7 +308,7 @@ const MicBTN = () => {
                                         }`}
                                       key={`mics_${deviceId}`}
                                       onClick={() => {
-                                        setSelectedMic({ id: deviceId });
+                                        setSelectedMic({ id: deviceId, label: label || `Mic ${index + 1}` });
                                         changeMic(deviceId);
                                         close();
                                       }}
@@ -311,7 +339,7 @@ const MicBTN = () => {
                                         }`}
                                       key={`speakers_${deviceId}`}
                                       onClick={() => {
-                                        setSelectedSpeaker({ id: deviceId });
+                                        setSelectedSpeaker({ id: deviceId, label: label || `Speaker ${index + 1}` });
                                         close();
                                       }}
                                     >
@@ -348,7 +376,7 @@ const MicBTN = () => {
 
 const WebCamBTN = () => {
   const { selectedWebcam, setSelectedWebcam, isCameraPermissionAllowed } =
-    useMeetingAppContext();
+    useDeviceContext();
 
   const { getCameras } = useMediaDevice();
   const mMeeting = useMeeting();
@@ -386,6 +414,7 @@ const WebCamBTN = () => {
           if (!localWebcamOn) {
             track = await getVideoTrack({
               webcamId: selectedWebcam.id,
+              encoderConfig: "h540p_w960p",
             });
           }
           mMeeting.toggleWebcam(track);
@@ -395,6 +424,15 @@ const WebCamBTN = () => {
         isFocused={localWebcamOn}
         focusIconColor={localWebcamOn && "white"}
         tooltip={"Toggle Webcam"}
+        badge={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        isRequestProcessing={null}
+        buttonText={null}
         renderRightComponent={() => {
           return (
             <>
@@ -455,7 +493,7 @@ const WebCamBTN = () => {
                                         }`}
                                       key={`output_webcams_${deviceId}`}
                                       onClick={() => {
-                                        setSelectedWebcam({ id: deviceId });
+                                        setSelectedWebcam({ id: deviceId, label: label || `Webcam ${index + 1}` });
                                         changeWebcam(deviceId);
                                         close();
                                       }}
@@ -492,12 +530,12 @@ const WebCamBTN = () => {
 };
 
 export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
-  const { sideBarMode, setSideBarMode } = useMeetingAppContext();
+  const { sideBarMode, setSideBarMode } = useUIContext();
   const RaiseHandBTN = ({ isMobile, isTab }) => {
     const { publish } = usePubSub("RAISE_HAND");
     const RaiseHand = () => {
       try {
-        publish("Raise Hand");
+        publish("Raise Hand", { persist: true });
       } catch (e) {
         console.log("Error in pubsub", e)
       }
@@ -505,17 +543,39 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
 
     return isMobile || isTab ? (
       <MobileIconButton
-        id="RaiseHandBTN"
+        btnID="RaiseHandBTN"
         tooltipTitle={"Raise hand"}
         Icon={RaiseHandIcon}
         onClick={RaiseHand}
         buttonText={"Raise Hand"}
+        badge={null}
+        isFocused={null}
+        bgColor={null}
+        disabledOpacity={null}
+        focusIconColor={null}
+        disabled={null}
+        large={null}
+        lottieOption={null}
       />
     ) : (
       <OutlinedButton
         onClick={RaiseHand}
         tooltip={"Raise Hand"}
         Icon={RaiseHandIcon}
+        bgColor={null}
+        isFocused={null}
+        badge={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        renderRightComponent={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        focusIconColor={null}
+        isRequestProcessing={null}
+        borderColor={null}
+        buttonText={null}
       />
     );
   };
@@ -577,6 +637,17 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
         }
         lottieOption={isRecording ? defaultOptions : null}
         isRequestProcessing={isRequestProcessing}
+        bgColor={null}
+        badge={null}
+        disabledOpacity={null}
+        renderRightComponent={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        focusIconColor={null}
+        borderColor={null}
+        buttonText={null}
       />
     );
   };
@@ -586,7 +657,7 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
 
     return isMobile || isTab ? (
       <MobileIconButton
-        id="screen-share-btn"
+        btnID="screen-share-btn"
         tooltipTitle={
           presenterId
             ? localScreenShareOn
@@ -615,6 +686,12 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
               ? true
               : false
         }
+        badge={null}
+        bgColor={null}
+        disabledOpacity={null}
+        focusIconColor={null}
+        large={null}
+        lottieOption={null}
       />
     ) : (
       <OutlinedButton
@@ -631,6 +708,18 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
             : "Present Screen"
         }
         disabled={presenterId ? (localScreenShareOn ? false : true) : false}
+        bgColor={null}
+        badge={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        renderRightComponent={null}
+        large={null}
+        btnID={null}
+        color={null}
+        focusIconColor={null}
+        isRequestProcessing={null}
+        borderColor={null}
+        buttonText={null}
       />
     );
   };
@@ -647,6 +736,19 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
           setIsMeetingLeft(true);
         }}
         tooltip="Leave Meeting"
+        isFocused={null}
+        badge={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        renderRightComponent={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        focusIconColor={null}
+        isRequestProcessing={null}
+        borderColor={null}
+        buttonText={null}
       />
     );
   };
@@ -659,21 +761,38 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
         Icon={ChatIcon}
         isFocused={sideBarMode === sideBarModes.CHAT}
         onClick={() => {
-          setSideBarMode((s) =>
-            s === sideBarModes.CHAT ? null : sideBarModes.CHAT
-          );
+          setSideBarMode(sideBarMode === sideBarModes.CHAT ? null : ("CHAT" as SideBarMode));
         }}
+        badge={null}
+        btnID={null}
+        bgColor={null}
+        disabledOpacity={null}
+        focusIconColor={null}
+        disabled={null}
+        large={null}
+        lottieOption={null}
       />
     ) : (
       <OutlinedButton
         Icon={ChatIcon}
         onClick={() => {
-          setSideBarMode((s) =>
-            s === sideBarModes.CHAT ? null : sideBarModes.CHAT
-          );
+          setSideBarMode(sideBarMode === sideBarModes.CHAT ? null : ("CHAT" as SideBarMode));
         }}
         isFocused={sideBarMode === "CHAT"}
         tooltip="View Chat"
+        bgColor={null}
+        badge={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        renderRightComponent={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        focusIconColor={null}
+        isRequestProcessing={null}
+        borderColor={null}
+        buttonText={null}
       />
     );
   };
@@ -688,23 +807,37 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
         disabledOpacity={1}
         Icon={ParticipantsIcon}
         onClick={() => {
-          setSideBarMode((s) =>
-            s === sideBarModes.PARTICIPANTS ? null : sideBarModes.PARTICIPANTS
-          );
+          setSideBarMode(sideBarMode === sideBarModes.PARTICIPANTS ? null : ("PARTICIPANTS" as SideBarMode));
         }}
         badge={`${new Map(participants)?.size}`}
+        btnID={null}
+        bgColor={null}
+        focusIconColor={null}
+        disabled={null}
+        large={null}
+        lottieOption={null}
       />
     ) : (
       <OutlinedButton
         Icon={ParticipantsIcon}
         onClick={() => {
-          setSideBarMode((s) =>
-            s === sideBarModes.PARTICIPANTS ? null : sideBarModes.PARTICIPANTS
-          );
+          setSideBarMode(sideBarMode === sideBarModes.PARTICIPANTS ? null : ("PARTICIPANTS" as SideBarMode));
         }}
         isFocused={sideBarMode === sideBarModes.PARTICIPANTS}
         tooltip={"View \nParticipants"}
         badge={`${new Map(participants)?.size}`}
+        bgColor={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        renderRightComponent={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        focusIconColor={null}
+        isRequestProcessing={null}
+        borderColor={null}
+        buttonText={null}
       />
     );
   };
@@ -784,7 +917,25 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
       <MicBTN />
       <WebCamBTN />
       <RecordingBTN />
-      <OutlinedButton Icon={EllipsisHorizontalIcon} onClick={handleClickFAB} />
+      <OutlinedButton 
+        Icon={EllipsisHorizontalIcon} 
+        onClick={handleClickFAB}
+        bgColor={null}
+        isFocused={null}
+        tooltip={null}
+        badge={null}
+        lottieOption={null}
+        disabledOpacity={null}
+        renderRightComponent={null}
+        disabled={null}
+        large={null}
+        btnID={null}
+        color={null}
+        focusIconColor={null}
+        isRequestProcessing={null}
+        borderColor={null}
+        buttonText={null}
+      />
       <Transition appear show={Boolean(open)} as={Fragment}>
         <Dialog
           as="div"
@@ -842,10 +993,7 @@ export function BottomBar({ bottomBarHeight, setIsMeetingLeft }) {
                               />
                             ) : icon ===
                               BottomBarButtonTypes.MEETING_ID_COPY ? (
-                              <MeetingIdCopyBTN
-                                isMobile={isMobile}
-                                isTab={isTab}
-                              />
+                              <MeetingIdCopyBTN />
                             ) : icon === BottomBarButtonTypes.PIP ? (
                               <PipBTN isMobile={isMobile} isTab={isTab} />
                             ) : null}

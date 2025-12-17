@@ -81,7 +81,6 @@ function App(): React.ReactElement {
             onClickStartMeeting={() => {
               setMeetingStarted(true);
             }}
-            startMeeting={isMeetingStarted}
             setIsMeetingLeft={setIsMeetingLeft}
           />
         )}

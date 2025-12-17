@@ -3,7 +3,7 @@ import { ChevronDownIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { Fragment, useState } from 'react'
 import React from "react";
 import DropCAM from '../icons/DropDown/DropCAM';
-import { useMeetingAppContext } from '../MeetingAppContextDef';
+import { useDeviceContext } from '../contexts';
 
 export default function DropDownCam({
   webcams,
@@ -14,7 +14,7 @@ export default function DropDownCam({
     setSelectedWebcam,
     selectedWebcam,
     isCameraPermissionAllowed
-  } = useMeetingAppContext()
+  } = useDeviceContext()
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -113,4 +113,3 @@ export default function DropDownCam({
     </>
   )
 }
-

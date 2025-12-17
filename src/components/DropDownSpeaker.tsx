@@ -4,8 +4,7 @@ import { Fragment } from 'react'
 import React, { useState } from "react";
 import DropSpeaker from '../icons/DropDown/DropSpeaker';
 import TestSpeaker from '../icons/DropDown/TestSpeaker';
-import test_sound from '../sounds/test_sound.mp3'
-import { useMeetingAppContext } from '../MeetingAppContextDef';
+import { useDeviceContext } from '../contexts';
 
 export default function DropDownSpeaker({ speakers }) {
 
@@ -13,7 +12,7 @@ export default function DropDownSpeaker({ speakers }) {
     setSelectedSpeaker,
     selectedSpeaker,
     isMicrophonePermissionAllowed
-  } = useMeetingAppContext()
+  } = useDeviceContext()
   const [audioProgress, setAudioProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false)
   const [isHovered, setIsHovered] = useState(false);
@@ -21,7 +20,7 @@ export default function DropDownSpeaker({ speakers }) {
   const testSpeakers = () => {
     const selectedSpeakerDeviceId = selectedSpeaker.id
     if (selectedSpeakerDeviceId) {
-      const audio = new Audio(test_sound);
+      const audio = new Audio('/sounds/test_sound.mp3');
       try {
         audio.setSinkId(selectedSpeakerDeviceId)
           .then(() => {
@@ -156,4 +155,3 @@ export default function DropDownSpeaker({ speakers }) {
     </>
   )
 }
-

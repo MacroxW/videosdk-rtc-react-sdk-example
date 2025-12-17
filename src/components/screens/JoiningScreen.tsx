@@ -16,7 +16,7 @@ import DropDownSpeaker from "../DropDownSpeaker";
 import DropDown from "../DropDown";
 import useMediaStream from "../../hooks/useMediaStream";
 import useIsMobile from "../../hooks/useIsMobile";
-import { useMeetingAppContext } from "../../MeetingAppContextDef";
+import { useDeviceContext } from "../../contexts";
 
 export function JoiningScreen({
   participantName,
@@ -28,9 +28,11 @@ export function JoiningScreen({
   onClickStartMeeting,
   customAudioStream,
   setCustomAudioStream,
+  customVideoStream,
   setCustomVideoStream,
   micOn,
   webcamOn,
+  setIsMeetingLeft,
 }) {
   const {
     selectedWebcam,
@@ -42,7 +44,7 @@ export function JoiningScreen({
     isMicrophonePermissionAllowed,
     setIsCameraPermissionAllowed,
     setIsMicrophonePermissionAllowed,
-  } = useMeetingAppContext()
+  } = useDeviceContext()
   const isMobile = useIsMobile();
 
   const [{ webcams, mics, speakers }, setDevices] = useState({
@@ -211,6 +213,7 @@ export function JoiningScreen({
 
       const stream = await getVideoTrack({
         webcamId: deviceId,
+        encoderConfig: "h540p_w960p",
       });
       setCustomVideoStream(stream);
       const videoTracks = stream?.getVideoTracks();
@@ -247,6 +250,7 @@ export function JoiningScreen({
     if (webcam) {
       const stream = await getVideoTrack({
         webcamId: selectedWebcam?.id,
+        encoderConfig: "h540p_w960p",
       });
       setCustomVideoStream(stream);
       const videoTracks = stream?.getVideoTracks();
@@ -347,7 +351,7 @@ export function JoiningScreen({
       }
     } catch (error) {
       // For firefox, it will request audio and video simultaneously.
-      await requestAudioVideoPermission();
+      await requestAudioVideoPermission(Constants.permission.AUDIO_AND_VIDEO);
       console.log(error);
     }
   };
@@ -464,7 +468,6 @@ export function JoiningScreen({
                             <ButtonWithTooltip
                               onClick={_toggleMic}
                               onState={micOn}
-                              mic={true}
                               OnIcon={MicOnIcon}
                               OffIcon={MicOffIcon}
                             />
@@ -476,7 +479,6 @@ export function JoiningScreen({
                             <ButtonWithTooltip
                               onClick={_toggleWebcam}
                               onState={webcamOn}
-                              mic={false}
                               OnIcon={WebcamOnIcon}
                               OffIcon={WebcamOffIcon}
                             />
@@ -526,8 +528,6 @@ export function JoiningScreen({
                   <MeetingDetailsScreen
                     participantName={participantName}
                     setParticipantName={setParticipantName}
-                    videoTrack={videoTrack}
-                    setVideoTrack={setVideoTrack}
                     onClickStartMeeting={onClickStartMeeting}
                     onClickJoin={async (id) => {
                       const token = await getToken();
@@ -572,22 +572,28 @@ export function JoiningScreen({
       <ConfirmBox
         open={dlgMuted}
         successText="OKAY"
+        rejectText=""
         onSuccess={() => {
           setDlgMuted(false);
         }}
+        onReject={() => {}}
         title="System mic is muted"
         subTitle="You're default microphone is muted, please unmute it or increase audio
             input volume from system settings."
+        subTitleColor=""
       />
 
       <ConfirmBox
         open={dlgDevices}
         successText="DISMISS"
+        rejectText=""
         onSuccess={() => {
           setDlgDevices(false);
         }}
+        onReject={() => {}}
         title="Mic or webcam not available"
         subTitle="Please connect a mic and webcam to speak and share your video in the meeting. You can also join without them."
+        subTitleColor=""
       />
     </>
   );
