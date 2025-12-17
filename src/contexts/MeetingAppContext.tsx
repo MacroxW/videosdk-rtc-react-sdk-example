@@ -28,21 +28,3 @@ export const MeetingAppProvider: React.FC<MeetingAppProviderProps> = ({ children
 export { useDeviceContext } from './DeviceContext';
 export { useUIContext } from './UIContext';
 export { useParticipantsContext } from './ParticipantsContext';
-
-// Import hooks for legacy compatibility
-import { useDeviceContext } from './DeviceContext';
-import { useUIContext } from './UIContext';
-import { useParticipantsContext } from './ParticipantsContext';
-
-// Legacy compatibility - combines all contexts
-export const useMeetingAppContext = () => {
-  const deviceContext = useDeviceContext();
-  const uiContext = useUIContext();
-  const participantsContext = useParticipantsContext();
-
-  return {
-    ...deviceContext,
-    ...uiContext,
-    ...participantsContext,
-  };
-};

@@ -11,7 +11,7 @@ import useIsMobile from "../hooks/useIsMobile";
 import useIsTab from "../hooks/useIsTab";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "react-toastify";
-import { useMeetingAppContext } from "../contexts";
+import { useDeviceContext, useParticipantsContext } from "../contexts";
 import type { MeetingContainerProps, MeetingError } from "../types";
 
 export function MeetingContainer({
@@ -22,7 +22,7 @@ export function MeetingContainer({
     setSelectedMic,
     setSelectedWebcam,
     setSelectedSpeaker,
-  } = useMeetingAppContext();
+  } = useDeviceContext();
 
   const [participantsData, setParticipantsData] = useState<string[]>([]);
 
@@ -47,7 +47,7 @@ export function MeetingContainer({
     return null;
   });
 
-  const { useRaisedHandParticipants } = useMeetingAppContext();
+  const { useRaisedHandParticipants } = useParticipantsContext();
   const bottomBarHeight = 60;
 
   const [containerHeight, setContainerHeight] = useState(0);

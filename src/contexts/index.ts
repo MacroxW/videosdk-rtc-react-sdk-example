@@ -4,7 +4,7 @@
  */
 
 // Main composed provider
-export { MeetingAppProvider, useMeetingAppContext } from './MeetingAppContext';
+export { MeetingAppProvider } from './MeetingAppContext';
 
 // Individual context providers and hooks
 export { DeviceProvider, useDeviceContext } from './DeviceContext';
