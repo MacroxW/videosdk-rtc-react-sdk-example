@@ -131,6 +131,7 @@ export function MeetingContainer({
 
   function onMeetingJoined() {
     console.log("onMeetingJoined");
+    setLocalParticipantAllowedJoin(true);
   }
 
   function onMeetingLeft() {

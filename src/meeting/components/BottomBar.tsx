@@ -260,25 +260,19 @@ const MicBTN = () => {
                     <Popover.Button
                       disabled={!isMicrophonePermissionAllowed}
                       className="flex items-center justify-center mt-1 mr-1 focus:outline-none"
+                      ref={btnRef}
+                      onMouseEnter={openTooltip}
+                      onMouseLeave={closeTooltip}
+                      onClick={() => {
+                        getMics();
+                      }}
                     >
-                      <div
-                        ref={btnRef}
-                        onMouseEnter={openTooltip}
-                        onMouseLeave={closeTooltip}
-                      >
-                        <button
-                          onClick={() => {
-                            getMics();
-                          }}
-                        >
-                          <ChevronDownIcon
-                            className="h-4 w-4"
-                            style={{
-                              color: mMeeting.localMicOn ? "white" : "black",
-                            }}
-                          />
-                        </button>
-                      </div>
+                      <ChevronDownIcon
+                        className="h-4 w-4"
+                        style={{
+                          color: mMeeting.localMicOn ? "white" : "black",
+                        }}
+                      />
                     </Popover.Button>
                     <Transition
                       as={Fragment}
@@ -445,25 +439,19 @@ const WebCamBTN = () => {
                     <Popover.Button
                       disabled={!isCameraPermissionAllowed}
                       className="flex items-center justify-center mt-1 mr-1 focus:outline-none"
+                      ref={btnRef}
+                      onMouseEnter={openTooltip}
+                      onMouseLeave={closeTooltip}
+                      onClick={() => {
+                        getWebcams();
+                      }}
                     >
-                      <div
-                        ref={btnRef}
-                        onMouseEnter={openTooltip}
-                        onMouseLeave={closeTooltip}
-                      >
-                        <button
-                          onClick={() => {
-                            getWebcams();
-                          }}
-                        >
-                          <ChevronDownIcon
-                            className="h-4 w-4"
-                            style={{
-                              color: localWebcamOn ? "white" : "black",
-                            }}
-                          />
-                        </button>
-                      </div>
+                      <ChevronDownIcon
+                        className="h-4 w-4"
+                        style={{
+                          color: localWebcamOn ? "white" : "black",
+                        }}
+                      />
                     </Popover.Button>
                     <Transition
                       as={Fragment}
